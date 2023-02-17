@@ -53,9 +53,10 @@ public class WoTServlet extends HttpServlet {
 
 		String author = request.getParameter("author");
 		String text = request.getParameter("tweet_text");
+		Long tw = 0L;
 		
 		try {
-			Database.insertTweet(author, text);
+			tw = Database.insertTweet(author, text);
 		}
 		catch(SQLException ex) {
 			ex.printStackTrace();
@@ -63,7 +64,13 @@ public class WoTServlet extends HttpServlet {
 		
 		// This method does NOTHING but redirect to the main page
 
-		response.sendRedirect(request.getContextPath());
+		String h = request.getHeader("Accept");
+		if(!h.equals("text/plain"))
+			response.sendRedirect(request.getContextPath());
+		else {
+			PrintWriter  out = response.getWriter ( );
+			out.println(tw);
+		}
 	}
 
 	private void printPLAINresult (Vector<Tweet> tweets, HttpServletRequest req, HttpServletResponse res) throws IOException {
