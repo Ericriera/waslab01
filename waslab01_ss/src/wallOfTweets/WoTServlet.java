@@ -36,7 +36,9 @@ public class WoTServlet extends HttpServlet {
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		try {
 			Vector<Tweet> tweets = Database.getTweets();
-			printHTMLresult(tweets, request, response);
+			String h = request.getHeader("Accept");
+			if(h.equals("text/plain")) printPLAINresult(tweets, request, response);
+			else printHTMLresult(tweets, request, response);
 		}
 
 		catch (SQLException ex ) {
@@ -54,6 +56,13 @@ public class WoTServlet extends HttpServlet {
 		response.sendRedirect(request.getContextPath());
 	}
 
+	private void printPLAINresult (Vector<Tweet> tweets, HttpServletRequest req, HttpServletResponse res) throws IOException {
+		res.setContentType ("text/html");
+		res.setCharacterEncoding(ENCODING);
+		PrintWriter  out = res.getWriter ( );
+		for(Tweet t : tweets) out.println("tweet #" + t.getTwid() + ": " + t.getAuthor() + ": " + t.getText() + " [" + t.getDate() + "]");
+	}
+	
 	private void printHTMLresult (Vector<Tweet> tweets, HttpServletRequest req, HttpServletResponse res) throws IOException
 	{
 		DateFormat dateFormatter = DateFormat.getDateInstance(DateFormat.FULL, currentLocale);
