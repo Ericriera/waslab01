@@ -12,6 +12,7 @@ import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.Cookie;
 
 /**
  * Servlet implementation class WoTServlet
@@ -69,7 +70,7 @@ public class WoTServlet extends HttpServlet {
 		else {
 			Cookie[] cookies = request.getCookies();
 			for (Cookie c : cookies) {
-				if(c.equals("Cookie" + delete)) Database.deleteTweet(String.valueOf(tw));
+				if(c.getName().equals("Cookie" + delete)) Database.deleteTweet(Long.parseLong(String.valueOf(tw)));
 			}
 		}
 		
@@ -125,7 +126,7 @@ public class WoTServlet extends HttpServlet {
 			
 			out.println("<form action=\"wot\" method=\"post\">");
 			out.println("<input type=\"submit\" name=\"action\" value=\"Delete tweet\">");
-			out.println("<input type=\"hidden\" name=\"twid\" value=" + tweet.getTwid() + ">");
+			out.println("<input type=\"hidden\" name=\"deleted\" value=" + tweet.getTwid() + ">");
 			out.println("</form>");
 		
 			out.println("</div>");

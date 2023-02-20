@@ -13,7 +13,7 @@ public class SimpleFluentClient {
     	
     	/* Insert code for Task #4 here */
 
-		String twid = (Request.Post(URI)
+		String twid = (Request.Post(URI + "wot")
 						.bodyForm(Form.form().add("author",  "Ericriera").add("tweet_text",  "Hola Mundo!").build())
 						.addHeader("Accept", "text/plain")
 						.execute().returnContent()).asString();
@@ -23,7 +23,7 @@ public class SimpleFluentClient {
     	
     	/* Insert code for Task #5 here */
     	
-    	Request.Post(URI)
+    	Request.Post(URI + "wot")
     	.addHeader("Accept", "text/plain")
     	.bodyForm(Form.form().add("delete",  twid).build())
     	.execute();
