@@ -61,6 +61,7 @@ public class WoTServlet extends HttpServlet {
 		catch(SQLException ex) {
 			ex.printStackTrace();
 		}
+		response.addCookie(new Cookie("Cookie" + String.valueOf(tw), String.valueOf(tw)));
 		
 		// This method does NOTHING but redirect to the main page
 
@@ -111,6 +112,7 @@ public class WoTServlet extends HttpServlet {
 			out.println("<div class=\"wallitem\">");
 			out.println("<h4><em>" + tweet.getAuthor() + "</em> @ "+ timeFormatter.format(tweet.getDate()) +"</h4>");
 			out.println("<p>" + tweet.getText() + "</p>");
+			out.println("<input type=\"submit\" name=\"action\" value=\"Delete tweet\">");
 			out.println("</div>");
 		}
 		out.println ( "</body></html>" );
