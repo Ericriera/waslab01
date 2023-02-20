@@ -13,14 +13,21 @@ public class SimpleFluentClient {
     	
     	/* Insert code for Task #4 here */
 
-		System.out.print(Request.Post(URI)
-    		    .bodyForm(Form.form().add("author",  "Ericriera").add("tweet_text",  "Hola Mundo!").build())
-    		    .addHeader("Accept", "text/plain")
-    		    .execute().returnContent());
+		String twid = (Request.Post(URI)
+						.bodyForm(Form.form().add("author",  "Ericriera").add("tweet_text",  "Hola Mundo!").build())
+						.addHeader("Accept", "text/plain")
+						.execute().returnContent()).asString();
+		System.out.print(twid);
 		
     	System.out.println(Request.Get(URI).addHeader("Accept","text/plain").execute().returnContent());
     	
     	/* Insert code for Task #5 here */
+    	
+    	Request.Post(URI)
+    	.addHeader("Accept", "text/plain")
+    	.bodyForm(Form.form().add("delete",  twid).build())
+    	.execute();
+    	System.out.println("The tweet " + twid + " has been deleted");
     }
 }
 

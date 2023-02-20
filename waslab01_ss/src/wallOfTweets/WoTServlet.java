@@ -53,15 +53,25 @@ public class WoTServlet extends HttpServlet {
 
 		String author = request.getParameter("author");
 		String text = request.getParameter("tweet_text");
+		String delete = request.getParameter("delete");
 		Long tw = 0L;
 		
-		try {
-			tw = Database.insertTweet(author, text);
+		if (delete == null ) {
+			try {
+				tw = Database.insertTweet(author, text);
+			}
+			catch(SQLException ex) {
+				ex.printStackTrace();
+			}
+			response.addCookie(new Cookie("Cookie" + String.valueOf(tw), String.valueOf(tw)));
 		}
-		catch(SQLException ex) {
-			ex.printStackTrace();
+		
+		else {
+			Cookie[] cookies = request.getCookies();
+			for (Cookie c : cookies) {
+				if(c.equals("Cookie" + delete)) Database.deleteTweet(String.valueOf(tw));
+			}
 		}
-		response.addCookie(new Cookie("Cookie" + String.valueOf(tw), String.valueOf(tw)));
 		
 		// This method does NOTHING but redirect to the main page
 
@@ -112,7 +122,12 @@ public class WoTServlet extends HttpServlet {
 			out.println("<div class=\"wallitem\">");
 			out.println("<h4><em>" + tweet.getAuthor() + "</em> @ "+ timeFormatter.format(tweet.getDate()) +"</h4>");
 			out.println("<p>" + tweet.getText() + "</p>");
+			
+			out.println("<form action=\"wot\" method=\"post\">");
 			out.println("<input type=\"submit\" name=\"action\" value=\"Delete tweet\">");
+			out.println("<input type=\"hidden\" name=\"twid\" value=" + tweet.getTwid() + ">");
+			out.println("</form>");
+		
 			out.println("</div>");
 		}
 		out.println ( "</body></html>" );
