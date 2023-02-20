@@ -57,20 +57,26 @@ public class WoTServlet extends HttpServlet {
 		String delete = request.getParameter("delete");
 		Long tw = 0L;
 		
-		if (delete == null ) {
+		if (delete == null) {
 			try {
 				tw = Database.insertTweet(author, text);
 			}
 			catch(SQLException ex) {
 				ex.printStackTrace();
 			}
+			//System.out.println("Last ID: "+ String.valueOf(tw));
 			response.addCookie(new Cookie("Cookie" + String.valueOf(tw), String.valueOf(tw)));
 		}
 		
 		else {
 			Cookie[] cookies = request.getCookies();
+			//System.out.println("#Cookies "+ cookies.length + "ID borrar: " + String.valueOf(delete));
 			for (Cookie c : cookies) {
-				if(c.getName().equals("Cookie" + delete)) Database.deleteTweet(Long.parseLong(String.valueOf(tw)));
+				//System.out.println("Cookie name: " + c.getName());
+				if(c.getName().equals("Cookie" + String.valueOf(delete))) {
+					Database.deleteTweet(Long.parseLong(String.valueOf(delete)));
+					//System.out.println("Erased");
+				}
 			}
 		}
 		
@@ -126,7 +132,7 @@ public class WoTServlet extends HttpServlet {
 			
 			out.println("<form action=\"wot\" method=\"post\">");
 			out.println("<input type=\"submit\" name=\"action\" value=\"Delete tweet\">");
-			out.println("<input type=\"hidden\" name=\"deleted\" value=" + tweet.getTwid() + ">");
+			out.println("<input type=\"hidden\" name=\"delete\" value=" + tweet.getTwid() + ">");
 			out.println("</form>");
 		
 			out.println("</div>");
