@@ -12,6 +12,8 @@ import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+
+import java.security.MessageDigest;
 import javax.servlet.http.Cookie;
 
 /**
@@ -64,18 +66,14 @@ public class WoTServlet extends HttpServlet {
 			catch(SQLException ex) {
 				ex.printStackTrace();
 			}
-			//System.out.println("Last ID: "+ String.valueOf(tw));
-			response.addCookie(new Cookie("Cookie" + String.valueOf(tw), String.valueOf(tw)));
+			response.addCookie(new Cookie("Cookie" + String.valueOf(tw), sha256(String.valueOf(tw))));
 		}
 		
 		else {
 			Cookie[] cookies = request.getCookies();
-			//System.out.println("#Cookies "+ cookies.length + "ID borrar: " + String.valueOf(delete));
 			for (Cookie c : cookies) {
-				//System.out.println("Cookie name: " + c.getName());
 				if(c.getName().equals("Cookie" + String.valueOf(delete))) {
 					Database.deleteTweet(Long.parseLong(String.valueOf(delete)));
-					//System.out.println("Erased");
 				}
 			}
 		}
@@ -138,5 +136,25 @@ public class WoTServlet extends HttpServlet {
 			out.println("</div>");
 		}
 		out.println ( "</body></html>" );
+	}
+	
+	public static String sha256(String base) {
+		try {
+			MessageDigest digest = MessageDigest.getInstance("SHA-256");
+	        byte[] hash = digest.digest(base.getBytes("UTF-8"));
+	        StringBuffer hexString = new StringBuffer();
+
+	        for (int i = 0; i < hash.length; i++) {
+	            String hex = Integer.toHexString(0xff & hash[i]);
+	            if (hex.length() == 1) {
+	            	hexString.append('0');
+	            }
+	            hexString.append(hex);
+	        }
+
+	        return hexString.toString();
+	    } catch(Exception e) {
+	    	throw new RuntimeException(e);
+	    }
 	}
 }
